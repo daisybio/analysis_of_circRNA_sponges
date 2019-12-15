@@ -1,10 +1,8 @@
 # Pipeline for the analysis of circRNA sponges
-This pipeline covers the systematical detection and analysis of circRNAs that sponge miRNAs from total RNA and small RNA sequencing data.
+This pipeline covers the systematical detection and analysis of circRNAs that sponge miRNAs. It requires total RNA and small RNA sequencing data and is based on the hypothesis that the negatively correlating expression of miRNAs and circRNAs (having miRNA binding sites) is an indicator of sponging. This pipeline is available as a Docker container.
 
 ## Overview
 ![pipeline_overview](https://user-images.githubusercontent.com/51077615/70857669-3b5c1c80-1ef3-11ea-9a12-3d8427781cf6.PNG)
-
-
 
 ## Dependencies
 
@@ -15,21 +13,17 @@ Thie pipeline is written in bash and R and requires several external tools:
 * CIRCExplorer2 version 2.3.6
 * miRanda version 3.3a
 * miRDeep2 version 2.0.1.2
-* samtools
+* samtools version 0.1.19
 * R packages: ggplot2, plyr, dplyr, data.table, gridExtra, grid, ggpubr
-
-This pipeline is also available as a Docker container.
 
 ## Input
 
-##### Requirements
-For this analysis, a minimum of 5 samples coming from the same organism are required. For each sample, two fastq are needed: one obtained through total RNA-seq (or rRNA-depleted) and one obtained through small RNA-seq (miRNA). 
-Various reference files are also needed: a GTF file, a genome fasta file, miR-Base reference files for hairpin and mature miRNA sequences. The exact input format and a way for obtaining the needed reference files are described below.
+For this analysis, a minimum of 5 samples coming from the same organism are required. For each sample, two fastq files are needed: one obtained through total RNA-seq (or rRNA-depleted) and one obtained through small RNA-seq. 
+Various reference files are also needed: a GTF file, a genome fasta file, miR-Base reference files for hairpin and mature miRNA sequences. The exact input format and how to get the needed reference files is described below.
 
 ### References preparation
 ##### Get genome fasta file, gtf file. 
-This example is for mouse annotation mm10. If you use another organism or annotation, please replace it in the following commands.
-For this step you will need genePredToGtf from UCSC Utilities (http://hgdownload.soe.ucsc.edu/admin/exe/).
+In this example the mouse annotation mm10 is used. If you are using another organism or annotation, please adapt the following commands. For this step you will need genePredToGtf from UCSC Utilities (http://hgdownload.soe.ucsc.edu/admin/exe/).
 For further information, please refer to: https://circexplorer2.readthedocs.io/en/latest/tutorial/setup/#installation
 
 ```bash
@@ -55,8 +49,8 @@ perl mirbase.pl 22
 perl mirbase.pl 22 1
 ```
 
-Extract the mature sequences from the mirbase file downloaded before and get the hairpin sequences. This example applies to mouse (mmu). For other organism, pleas use the repsective three letter code  (for example hsa for human).  
-Also extract mature miRNA information from related species(here rat(rno) and human (hsa)).
+Extract the mature sequences from the mirbase file downloaded before and get the hairpin sequences. This example applies to mouse (mmu). For other organisms, please use the repsective three letter code  (for example hsa for human).  
+Also extract mature miRNA information from related species (here rat (rno) and human (hsa)).
 ``` bash
 extract_miRNAs.pl ~/mirbase/22/mature.fa.gz mmu > mature_ref.fa
 extract_miRNAs.pl ~/mirbase/22/hairpin.fa.gz mmu > hairpin_ref.fa
@@ -103,7 +97,7 @@ bowtie2-build mm10.fa mm10
 ```
 
 #### Parameters
-Replace every parameter in the file ```parameters.txt``` with information suitable for your dataset.
+Replace every parameter in the file ```input/parameters.txt``` with information suitable for your dataset.
 ```bash
 dataset=input_folder/dataset.tsv
 adapter="TGGAATTCTCGGGTGCCAAGG"
@@ -115,7 +109,7 @@ scripts_dir=/bin/scripts/
 ```
 
 ##### dataset
-The dataset file contains the name of the sample (first column), the path to the circRNA fastq file corresponding to the mentioned sample (second column), the path to the miRNA fastq file corresponding to the mentioned sample (third column). The file should be tab-separated and contain no header. The dataset file should look like this:
+The dataset file contains the name of the sample (first column), the path to the circRNA fastq file corresponding to the mentioned sample (second column), the path to the miRNA fastq file corresponding to the mentioned sample (third column). The file should be tab-separated without header. The dataset file should look like this:
 ```
 cerebellum_rep1 input_folder/data/circRNA_fastq/<sample1>.fastq	input_folder/data/miRNA_fastq/<sample1>.fastq
 cerebellum_rep2	input_folder/data/circRNA_fastq/<sample2>.fastq	input_folder/data/miRNA_fastq/<sample1>.fastq
@@ -125,7 +119,7 @@ hippocampus_rep1  input_folder/data/circRNA_fastq/<sample4>.fastq	input_folder/d
 ```
 
 ##### adapter
-This depends on the sequencing library you used. In order to find out which library adapter was used, check: https://support.illumina.com/bulletins/2016/12/what-sequences-do-i-use-for-adapter-trimming.html
+The adapter depends on the sequencing library used for your data. In order to find out which library adapter was used, check: https://support.illumina.com/bulletins/2016/12/what-sequences-do-i-use-for-adapter-trimming.html
 For example TruSeq Small RNA uses the adapter "TGGAATTCTCGGGTGCCAAGG".
 
 ##### species
@@ -135,9 +129,13 @@ Three letter code for the species used in this experiment. For example mmu (mous
 ref_dir is the directory containing all references. ref_prefix is the reference directory followed by the prefix used for building the bowtie index.
 
 ##### scripts_dir
-```scripts_dir=/bin/scripts``` for the use of Docker Container. If you prefer to run the pipeline manually, please specify the location of the scripts.
+```scripts_dir=/scripts/``` for the use of Docker Container. If you prefer to run the pipeline manually, please specify the location of the scripts.
 
+## Usage 
+```bash
+pipeline.sh /path/to/parameters.txt
+```
 
-### Build Docker
-Download the Dockerfile and the folders scripts and soft. In the same directory run:
+## Build Docker
+Download the ```Dockerfile``` and the folders ```scripts``` and ```soft```. In the same directory run:
 ```docker build -t pipeline_docker .```
