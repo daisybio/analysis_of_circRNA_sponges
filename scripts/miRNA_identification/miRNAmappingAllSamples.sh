@@ -13,5 +13,5 @@ while read line
 do
 	sample=$(cut -f1 <<< $line)
 	miRNAfastq=$(cut -f3 <<< $line)
-	bash ${scripts_dir}/miRNAidentification/miRNAmappingForSample.sh $sample $miRNAfastq $adapter $species $ref_dir $ref_prefix $out_dir
+	bash ${scripts_dir}/miRNA_identification/miRNAmappingForSample.sh $sample $miRNAfastq $adapter $species $ref_dir $ref_prefix $out_dir
 done < $dataset

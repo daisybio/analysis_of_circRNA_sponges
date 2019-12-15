@@ -1,5 +1,5 @@
 #!/bin/bash
-$parameters_file=$1
+parameters_file=$1
 
 source $parameters_file
 echo "Parameters:"
@@ -24,8 +24,8 @@ Rscript ${scripts_dir}/circRNA_detection/circRNA_results_processing.R $dataset "
 
 #run miRNA identification module
 echo "$(date): circRNA identification module using miRDeep2"
-bash ${scripts_dir}/miRNA_identification/miRNAmappingAllSamples.sh $dataset $adapter $species $ref_dir $ref_prefix $out_dir $scripts_dir
-mkdir -p "${out_dir}/results/miRNA/read_distributions"
+bash ${scripts_dir}/miRNA_identification/miRNAmappingAllSamples.sh $dataset $adapter $species $ref_dir $ref_prefix ${out_dir}/samples $scripts_dir
+mkdir -p "${out_dir}/results/miRNA"
 Rscript ${scripts_dir}/miRNA_identification/miRNA_results_processing.R $dataset "${out_dir}"
 
 echo "$(date): Extracting fasta sequences for circRNAs"
