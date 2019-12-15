@@ -103,7 +103,7 @@ bowtie2-build mm10.fa mm10
 ```
 
 #### Parameters
-Replace every parameter in the file ```parameters.txt``` with information suitable for your dataset.
+Replace every parameter in the file ```input/parameters.txt``` with information suitable for your dataset.
 ```bash
 dataset=input_folder/dataset.tsv
 adapter="TGGAATTCTCGGGTGCCAAGG"
