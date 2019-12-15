@@ -1,5 +1,5 @@
 # Pipeline for the analysis of circRNA sponges
-This pipeline covers the systematical detection and analysis of circRNAs that sponge miRNAs. It requires total RNA and small RNA sequencing data and is based on the hypothesis that the negatively correlating expression of miRNAs and circRNAs (having miRNA binding sites) is an indicator of sponging. This pipeline is available as a Docker container.
+This pipeline covers the systematical analysis of circRNAs that sponge miRNAs. It requires total RNA and small RNA sequencing data and is based on the hypothesis that the negatively correlating expression of miRNAs and circRNAs (having miRNA binding sites) is an indicator of sponging. This pipeline is available as a Docker container.
 
 ## Overview
 ![pipeline_overview](https://user-images.githubusercontent.com/51077615/70857669-3b5c1c80-1ef3-11ea-9a12-3d8427781cf6.PNG)
