@@ -1,0 +1,7 @@
+dataset=~/testing_data/big_testing/dataset.tsv
+adapter="TGGAATTCTCGGGTGCCAAGG"
+species=mmu
+ref_dir=~/testing_data/reference/
+ref_prefix=~/testing_data/reference/mm10
+out_dir=~/testing_data/big_testing/after_mapping/
+scripts_dir=~/circRNA-detection/pipeline/scripts/
