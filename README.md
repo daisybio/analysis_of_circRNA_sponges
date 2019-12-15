@@ -138,4 +138,5 @@ pipeline.sh /path/to/parameters.txt
 
 ## Build Docker
 Download the ```Dockerfile``` and the folders ```scripts``` and ```soft```. In the same directory run:
+
 ```docker build -t pipeline_docker .```
