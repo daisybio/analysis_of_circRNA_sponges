@@ -23,7 +23,7 @@ Various reference files are also needed: a GTF file, a genome fasta file, miR-Ba
 
 ### References preparation
 ##### Get genome fasta file, gtf file. 
-In this example the mouse annotation mm10 is used. If you are using another organism or annotation, please adapt the following commands. For this step you will need genePredToGtf from UCSC Utilities (http://hgdownload.soe.ucsc.edu/admin/exe/).
+In this example, the mouse annotation mm10 is used. If you are using another organism or annotation, please adapt the following commands. For this step, you will need genePredToGtf from UCSC Utilities (http://hgdownload.soe.ucsc.edu/admin/exe/).
 For further information, please refer to: https://circexplorer2.readthedocs.io/en/latest/tutorial/setup/#installation
 
 ```bash
@@ -49,8 +49,8 @@ perl mirbase.pl 22
 perl mirbase.pl 22 1
 ```
 
-Extract the mature sequences from the mirbase file downloaded before and get the hairpin sequences. This example applies to mouse (mmu). For other organisms, please use the repsective three letter code  (for example hsa for human).  
-Also extract mature miRNA information from related species (here rat (rno) and human (hsa)).
+Extract the mature sequences from the mirbase file downloaded before and get the hairpin sequences. This example applies to mouse (mmu). For other organisms, please use the respective three letter code  (for example hsa for human).  
+Also extract mature miRNA sequences from related species (here rat (rno) and human (hsa)).
 ``` bash
 extract_miRNAs.pl ~/mirbase/22/mature.fa.gz mmu > mature_ref.fa
 extract_miRNAs.pl ~/mirbase/22/hairpin.fa.gz mmu > hairpin_ref.fa
@@ -129,7 +129,7 @@ Three letter code for the species used in this experiment. For example mmu (mous
 ref_dir is the directory containing all references. ref_prefix is the reference directory followed by the prefix used for building the bowtie index.
 
 ##### scripts_dir
-```scripts_dir=/scripts/``` for the use of Docker Container. If you prefer to run the pipeline manually, please specify the location of the scripts.
+Path to the ```scripts``` folder. ```scripts_dir=/scripts/``` for the use of Docker Container. If you prefer to run the pipeline manually, please specify the location of the scripts.
 
 ## Usage 
 ```bash
