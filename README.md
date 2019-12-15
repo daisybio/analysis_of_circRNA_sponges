@@ -137,7 +137,11 @@ ref_dir is the directory containing all references. ref_prefix is the reference 
 ##### scripts_dir
 ```scripts_dir=/bin/scripts``` for the use of Docker Container. If you prefer to run the pipeline manually, please specify the location of the scripts.
 
+## Usage 
+```bash
+pipeline.sh /path/to/parameters.txt
+```
 
-### Build Docker
+## Build Docker
 Download the Dockerfile and the folders scripts and soft. In the same directory run:
 ```docker build -t pipeline_docker .```
