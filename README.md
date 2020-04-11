@@ -23,14 +23,20 @@ Various reference files are also needed: a GTF file, a genome fasta file, miR-Ba
 
 ### References preparation
 ##### Get genome fasta file, gtf file. 
-In this example, the mouse annotation mm10 is used. If you are using another organism or annotation, please adapt the following commands. For this step, you will need genePredToGtf from UCSC Utilities (http://hgdownload.soe.ucsc.edu/admin/exe/).
-For further information, please refer to: https://circexplorer2.readthedocs.io/en/latest/tutorial/setup/#installation
-
+In this example, the mouse annotation mm10 is used. If you are using another organism or annotation, please adapt the following commands. For further information, please refer to: https://circexplorer2.readthedocs.io/en/latest/tutorial/setup/#installation
+1. Download gene annotation file:
 ```bash
 fetch_ucsc.py mm10 fa mm10.fa
-fetch_ucsc.py mm10 ref mm10_ref.txt
-fetch_ucsc.py mm10 kg mm10_kg.txt
+fetch_ucsc.py mm10 ref mm10_ref.txt # optional
+fetch_ucsc.py mm10 kg mm10_kg.txt # optional
+```
+2. Convert gene annotation file to GTF file using genePredToGtf. For this step, you will need genePredToGtf from UCSC Utilities (http://hgdownload.soe.ucsc.edu/admin/exe/).
+```
 cut -f2-11 mm10_kg.txt|./data/reference/genePredToGtf file stdin mm10_kg.gtf
+```
+3. If you downloaded multiple gene annotation files in step 1,  you can concatenate all of them into one file.
+```
+cat hg19_ref.txt hg19_kg.txt hg19_ens.txt > hg19_ref_all.txt
 ```
 
 ##### Get miRNA reference files from mirbase. 
@@ -70,16 +76,7 @@ bowtie2-build mm10.fa mm10
 ```bash
 ├─── input_folder
 │   ├─── parameters.txt
-│   ├─── dataset.tsv
-│   └─── data
-│       ├─── miRNA_fastq
-│       |   ├─── <sample1>.fastq
-│       |   ├─── <sample2>.fastq
-│       |   └─── ...
-│       └─── circRNA_fastq
-│           ├─── <sample1>.fastq
-│           ├─── <sample2>.fastq
-│           └─── ...
+│   └─── dataset.tsv
 |
 ├─── references
 │   ├─── <mm10>.fa
@@ -97,7 +94,7 @@ bowtie2-build mm10.fa mm10
 ```
 
 #### Parameters
-Replace every parameter in the file ```input/parameters.txt``` with information suitable for your dataset.
+Replace every parameter in the file ```input/parameters.txt``` with information suitable for your dataset. If your totalRNA sequencing data is paired-end, set the paramerer ```paired_end=true```, if it is single-end set ```paired_end=false```.
 ```bash
 dataset=input_folder/dataset.tsv
 adapter="TGGAATTCTCGGGTGCCAAGG"
@@ -106,15 +103,36 @@ ref_dir=references/
 ref_prefix=references/mm10
 out_dir=output_folder
 scripts_dir=/bin/scripts/
+paired_end=false
 ```
 
 ##### dataset
-The dataset file contains the name of the sample (first column), the path to the circRNA fastq file corresponding to the mentioned sample (second column), the path to the miRNA fastq file corresponding to the mentioned sample (third column). The file should be tab-separated without header. The dataset file should look like this:
+The ```input/dataset.tsv``` file contains the paths to the totalRNA and smallRNA fastq files. The file should be tab-separated without header. The file structure depends on whether your totalRNA sequencing data is single-end or paired-end. Make sure to specify this in the ```parameters.tsv``` file.
+
+####### single-end
+If your totalRNA sequencing data is single-end, the ```dataset.tsv``` file should look like this:
+Column 1: sample name
+Column 2: path to totalRNA fastq file corresponding to the sample mentioned in column 1
+Column 3: path to the miRNA fastq file corresponding to the sample mentioned in column 1
 ```
-cerebellum_rep1 input_folder/data/circRNA_fastq/<sample1>.fastq	input_folder/data/miRNA_fastq/<sample1>.fastq
-cerebellum_rep2	input_folder/data/circRNA_fastq/<sample2>.fastq	input_folder/data/miRNA_fastq/<sample1>.fastq
-cerebellum_rep3	input_folder/data/circRNA_fastq/<sample3>.fastq	input_folder/data/miRNA_fastq/<sample1>.fastq
-hippocampus_rep1  input_folder/data/circRNA_fastq/<sample4>.fastq	input_folder/data/miRNA_fastq/<sample1>.fastq
+cerebellum_rep1 path/to/<totalRNA_sample1>.fastq	path/to/<smallRNA_sample1>.fastq
+cerebellum_rep2 path/to/<totalRNA_sample2>.fastq	path/to/<smallRNA_sample2>.fastq
+cerebellum_rep3	path/to/<totalRNA_sample3>.fastq	path/to/<smallRNA_sample3>.fastq
+hippocampus_rep1  path/to/<totalRNA_sample4>.fastq path/to/<smallRNA_sample4>.fastq
+...
+```
+
+####### paired-end
+If your totalRNA sequencing data is single-end, the ```dataset.tsv``` file should look like this:
+Column 1: sample name
+Column 2: path to totalRNA read1 fastq file (corresponding to the sample mentioned in column 1)
+Column 3: path to totalRNA read2 fastq file (corresponding to the sample mentioned in column 1)
+Column 4: path to the miRNA fastq file (corresponding to the sample mentioned in column 1)
+```
+cerebellum_rep1 path/to/<totalRNA_sample1_R1>.fastq	path/to/<totalRNA_sample1_R2>.fastq path/to/<smallRNA_sample1>.fastq
+cerebellum_rep2 path/to/<totalRNA_sample2_R1>.fastq	path/to/<totalRNA_sample2_R2>.fastq  path/to/<smallRNA_sample2>.fastq
+cerebellum_rep3	path/to/<totalRNA_sample3_R1>.fastq	path/to/<totalRNA_sample3_R2>.fastq path/to/<smallRNA_sample3>.fastq
+hippocampus_rep1  path/to/<totalRNA_sample4_R1>.fastq path/to/<totalRNA_sample4_R2>.fastq path/to/<smallRNA_sample4>.fastq
 ...
 ```
 
@@ -133,7 +151,7 @@ Path to the ```scripts``` folder. ```scripts_dir=/scripts/``` for the use of Doc
 
 ## Usage 
 ```bash
-pipeline.sh /path/to/parameters.txt
+bash pipeline.sh /path/to/parameters.txt
 ```
 
 ## Build Docker
