@@ -3,28 +3,28 @@ parameters_file=$1
 
 source $parameters_file
 echo "Parameters:"
-echo $dataset
-echo $adapter
-echo $species
-echo $ref_dir
-echo $ref_prefix
-echo $out_dir
-echo $scripts_dir
+echo "dataset file: $dataset"
+echo "adapter: $adapter"
+echo "species: $species"
+echo "reference directory: $ref_dir"
+echo "reference prefix: $ref_prefix"
+echo "output in: $out_dir"
+echo "scripts directory: $scripts_dir"
+echo "paired end: $paired_end"
 
 
 echo "$(date): Started pipeline"
 mkdir -p "${out_dir}/samples/"
 
-
 #run circRNA detection module
 echo "$(date): circRNA detection module using CIRCexplorer2"
-bash ${scripts_dir}/circRNA_detection/circDetectionAllSamples.sh $dataset $ref_prefix ${out_dir}/samples $scripts_dir
+bash ${scripts_dir}/circRNA_detection/circDetectionAllSamples.sh $dataset $ref_prefix ${out_dir}/samples $scripts_dir $paired_end
 mkdir -p "${out_dir}/results/circRNA"
 Rscript ${scripts_dir}/circRNA_detection/circRNA_results_processing.R $dataset "${out_dir}"
 
 #run miRNA identification module
 echo "$(date): circRNA identification module using miRDeep2"
-bash ${scripts_dir}/miRNA_identification/miRNAmappingAllSamples.sh $dataset $adapter $species $ref_dir $ref_prefix ${out_dir}/samples $scripts_dir
+bash ${scripts_dir}/miRNA_identification/miRNAmappingAllSamples.sh $dataset $adapter $species $ref_dir $ref_prefix ${out_dir}/samples $scripts_dir $paired_end
 mkdir -p "${out_dir}/results/miRNA"
 Rscript ${scripts_dir}/miRNA_identification/miRNA_results_processing.R $dataset "${out_dir}"
 

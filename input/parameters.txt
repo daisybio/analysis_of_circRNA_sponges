@@ -5,3 +5,4 @@ ref_dir=/reference/
 ref_prefix=reference/mm10
 out_dir=output/
 scripts_dir=/scripts/
+paired_end=false
